@@ -43,7 +43,7 @@
     *  <img src="https://github.com/Reinhart-py/Reinhart-py/blob/main/images/github.png" alt="Github" width="18" height="18">  [GitHub](https://github.com/Reinhart-py)
     *  💬 [WhatsApp](https://wa.me/qr/63S5244F7XQ5G1)
     *  🐦 [Twitter](https://twitter.com/Reinhart_py_)
-  *  📲 Telegram: [REINHART]([https://t.me/kiri050](https://t.me/m/wFtKErccYjQ1))
+  *  📲 Telegram: [REINHART](https://t.me/m/wFtKErccYjQ1))
   
 ---
 <!--
