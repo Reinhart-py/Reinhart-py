@@ -36,7 +36,7 @@
     *   ✉️ Email: [reinhart96x@gmail.com](mailto:reinhart96x@gmail.com)
     *  📲 Telegram: [REINHART](https://t.me/kiri0507)
     *   📞 Phone: [+1 (315) 370-1897](tel:+13153701897)
-    *   ✉️ Send a Message: [Contact Form](https://reinlabs.netlify.app/contact)
+    *   ✉️ Send a Message: [Contact Form](https://reinlabs.netlify.app/Contact)
     *   💼 Open For Tasks & Jobs
 *  📢 **Social Medias**
     *  📸 [Instagram](https://www.instagram.com/Reinhart.dev/)
