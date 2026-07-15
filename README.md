@@ -1,52 +1,114 @@
-👋 Hi, I'm Reinhart
+# Reinhart
+
+Full-stack engineer focused on building reliable software, developer tools, automation, and scalable backend systems.
+
+I enjoy solving difficult engineering problems, improving existing products, and helping developers debug, optimize, and ship software faster. My work ranges from modern web applications and mobile apps to bots, APIs, infrastructure, and developer tooling.
+
+## What I Work With
+
+### Frontend
+
+* HTML
+* CSS
+* JavaScript
+* TypeScript
+* React
+* Next.js
+* Vue
+* Tailwind CSS
+* UI Engineering
+
+### Backend
+
+* Python
+* Node.js
+* Express
+* REST APIs
+* PostgreSQL
+* Supabase
+* Firebase
+
+### Mobile Development
+
+* Android
+* React Native
+* Cross-platform Applications
+
+### Automation & Bots
+
+* Telegram Bots
+* Discord Bots
+* Web Automation
+* API Integrations
+* Workflow Automation
+
+### DevOps & Infrastructure
+
+* Git
+* Linux
+* Docker
+* Cloudflare
+* Vercel
+* Netlify
+* Railway
+
+### Security
+
+* Bug Hunting
+* Security Research
+* Penetration Testing
+* Secure Application Development
+
+## What I Build
+
+* Full-stack web applications
+* SaaS products
+* Internal business tools
+* AI integrations
+* Automation systems
+* Telegram bots
+* APIs
+* Dashboards
+* Custom developer tools
+
+## Current Focus
+
+I'm currently focused on building products that combine modern web technologies, automation, and AI to solve real business problems. I enjoy working across the entire stack, from designing user interfaces to building backend architecture and deployment pipelines.
+
+## Links
+
+Website
+https://reinlabs.netlify.app
+
+GitHub
+https://github.com/Reinhart-py
+
+Repositories
+https://github.com/Reinhart-py?tab=repositories
+
+## Contact
+
+Email
+[reinhart96x@gmail.com](mailto:reinhart96x@gmail.com)
+
+Telegram
+https://t.me/kiri0507
+
+Project Enquiries
+https://t.me/m/DLyhxKUhYTdl
+
+Support
+https://t.me/m/wFtKErccYjQ1
+
+WhatsApp
+https://wa.me/qr/63S5244F7XQ5G1
+
+X (Twitter)
+https://twitter.com/Reinhart_py_
+
+Instagram
+https://www.instagram.com/Reinhart.dev/
 
 ---
 
-👤 **Reinhart**
-
-*   🌐 **Website:**  [Reinhart's Portfolio](https://reinlabs.netlify.app)
-*   👨‍💻 **About:** Full-stack Tech Expert & Bot Maestro.I help developer solving their issues also I turn messy code into awesome digital projects.
-*   💼 **Portfolio:**
-    *   [GitHub](https://github.com/Reinhart-py)
-    *   [Projects](https://github.com/Reinhart-py?tab=repositories)
-    *   "Code is poetry, and I'm the poet"
-*   🛠️ **Skills:**
-    *   **Web Development:**
-         *   HTML
-         *   CSS
-         *   JavaScript
-         *   React/Vue/Other frameworks
-         *   UI/UX Design
-    *   **Backend Development:**
-        *    Python
-        *    Node.js
-    *   **App Development:**
-        *    Mobile Apps (Android/iOS)
-        *    Cross-Platform Apps
-    *   **Bot Development:**
-         *   Python Telegram Bots
-    *   **Cybersecurity & Hacking:**
-         *    Bug Hunting
-         *    Penetration Testing
-     *  **Problem Solving:**
-       *  Developer Troubleshooting
-    *   **Teaching:**
-        *   Mentoring & Tutoring
-*   📞 **Contact:**
-    *   ✉️ Email: [reinhart96x@gmail.com](mailto:reinhart96x@gmail.com)
-    *  📲 Telegram: [REINHART](https://t.me/kiri0507)
-    *   📞 Phone: [+1 (315) 370-1897](tel:+13153701897)
-    *   ✉️ Send a Message: [Contact Form](https://reinlabs.netlify.app/Contact)
-    *   💼 Open For Tasks & Jobs
-*  📢 **Social Medias**
-    *  📸 [Instagram](https://www.instagram.com/Reinhart.dev/)
-    *  <img src="https://github.com/Reinhart-py/Reinhart-py/blob/main/images/github.png" alt="Github" width="18" height="18">  [GitHub](https://github.com/Reinhart-py)
-    *  💬 [WhatsApp](https://wa.me/qr/63S5244F7XQ5G1)
-    *  🐦 [Twitter](https://twitter.com/Reinhart_py_)
-  *  📲 Telegram: [help](https://t.me/m/wFtKErccYjQ1)  or [enquiry](https://t.me/m/DLyhxKUhYTdl)
-  
----
-<!--
-Reinhart is a ✨ special ✨ repo.
-You can click the Preview link to take a look, also Reinhart is billu and billu is badmosh 😼.
--->
+I believe good software should be simple, maintainable, and built to last. I care more about solving problems than chasing trends, and I enjoy building tools that other developers find useful.
