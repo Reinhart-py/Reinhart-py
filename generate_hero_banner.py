@@ -7,47 +7,11 @@ from PIL import Image
 def get_dithered_photo_points(img_path, max_width=300, max_height=338, target_light=False):
     """Applies Floyd-Steinberg error diffusion dithering to get high-fidelity shaded points."""
     try:
-        img = Image.open(img_path).convert("RGB")
+        img = Image.open(img_path).convert("L")
     except Exception as e:
         print(f"Error opening {img_path}: {e}")
         sys.exit(1)
         
-    # Apply soft elliptical vignette to clean out background corners
-    w, h = img.size
-    cx, cy = w / 2.0, h * 0.45
-    rx, ry = w * 0.42, h * 0.46
-    
-    bg_color = (0, 0, 0) if target_light else (255, 255, 255)
-    
-    pixels = img.load()
-    for y in range(h):
-        for x in range(w):
-            dx = (x - cx) / rx
-            dy = (y - cy) / ry
-            dist = dx*dx + dy*dy
-            if dist > 1.0:
-                pixels[x, y] = bg_color
-            else:
-                factor = 1.0
-                if dist > 0.5:
-                    # Smoothly fade to background at the edges
-                    factor = (1.0 - dist) / 0.5
-                
-                r, g, b = pixels[x, y]
-                gray = int(0.299 * r + 0.587 * g + 0.114 * b)
-                
-                if target_light:
-                    # Dark theme: map gray [0, 255] to [60, 255] and fade to black (0)
-                    adjusted_gray = int(60 + (gray / 255.0) * (255.0 - 60))
-                    final_gray = int(adjusted_gray * factor)
-                else:
-                    # Light theme: map gray [0, 255] to [0, 195] and fade to white (255)
-                    adjusted_gray = int((gray / 255.0) * 195)
-                    final_gray = int(255 - (255 - adjusted_gray) * factor)
-                
-                pixels[x, y] = (final_gray, final_gray, final_gray)
-                
-    img = img.convert("L")
     img.thumbnail((max_width, max_height))
     w, h = img.size
     
@@ -55,9 +19,17 @@ def get_dithered_photo_points(img_path, max_width=300, max_height=338, target_li
     dx = (max_width - w) // 2
     dy = (max_height - h) // 2
     
-    # Load pixels into a 2D float array to distribute errors without rounding issues
+    # Load pixels and apply light level adjustment to prevent clipping in shadows and highlights
     pixels_data = list(img.getdata())
-    arr = [[float(pixels_data[y * w + x]) for x in range(w)] for y in range(h)]
+    arr = []
+    for y in range(h):
+        row = []
+        for x in range(w):
+            gray = float(pixels_data[y * w + x])
+            # Stretch gray values so shadows are lifted and highlights are compressed slightly
+            adjusted = 40.0 + (gray / 255.0) * (230.0 - 40.0)
+            row.append(adjusted)
+        arr.append(row)
     
     points = []
     for y in range(h):

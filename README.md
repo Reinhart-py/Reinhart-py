@@ -1,8 +1,8 @@
 <!-- ===== THEME-AWARE HERO BANNER ===== -->
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Reinhart-py/Reinhart-py/main/dark.svg?v=5">
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/Reinhart-py/Reinhart-py/main/light.svg?v=5">
-  <img alt="Reinhart" src="https://raw.githubusercontent.com/Reinhart-py/Reinhart-py/main/light.svg?v=5">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Reinhart-py/Reinhart-py/main/dark.svg?v=6">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/Reinhart-py/Reinhart-py/main/light.svg?v=6">
+  <img alt="Reinhart" src="https://raw.githubusercontent.com/Reinhart-py/Reinhart-py/main/light.svg?v=6">
 </picture>
 
 # Reinhart
