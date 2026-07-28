@@ -8,11 +8,13 @@ import json, os, sys, urllib.request
 TOKEN = os.environ.get("GITHUB_TOKEN", "")
 
 def gh(url):
-    req = urllib.request.Request(url, headers={
+    headers = {
         "Accept": "application/vnd.github+json",
-        "Authorization": f"Bearer {TOKEN}" if TOKEN else "",
         "User-Agent": "projects-panel",
-    })
+    }
+    if TOKEN:
+        headers["Authorization"] = f"Bearer {TOKEN}"
+    req = urllib.request.Request(url, headers=headers)
     with urllib.request.urlopen(req, timeout=15) as r:
         return json.load(r)
 

@@ -1,8 +1,8 @@
 <!-- ===== THEME-AWARE HERO BANNER ===== -->
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Reinhart-py/Reinhart-py/main/dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/Reinhart-py/Reinhart-py/main/light.svg">
-  <img alt="Reinhart" src="https://raw.githubusercontent.com/Reinhart-py/Reinhart-py/main/light.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="light.svg">
+  <img alt="Reinhart" src="light.svg">
 </picture>
 
 # Reinhart
@@ -41,9 +41,9 @@ I enjoy solving difficult engineering problems, improving existing products, and
 <!-- ===== DYNAMIC PROJECTS PANEL ===== -->
 <div align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Reinhart-py/Reinhart-py/projects/projects.svg">
-    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/Reinhart-py/Reinhart-py/projects/projects-light.svg">
-    <img width="100%" src="https://raw.githubusercontent.com/Reinhart-py/Reinhart-py/projects/projects.svg" alt="Projects" />
+    <source media="(prefers-color-scheme: dark)" srcset="projects.svg">
+    <source media="(prefers-color-scheme: light)" srcset="projects-light.svg">
+    <img width="100%" src="projects.svg" alt="Projects" />
   </picture>
 </div>
 
@@ -52,9 +52,9 @@ I enjoy solving difficult engineering problems, improving existing products, and
 <!-- ===== CONTRIBUTION SNAKE ===== -->
 <div align="center">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Reinhart-py/Reinhart-py/output/snake-dark.svg" />
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/Reinhart-py/Reinhart-py/output/snake-light.svg" />
-  <img alt="Snake eating my contributions" src="https://raw.githubusercontent.com/Reinhart-py/Reinhart-py/output/snake-light.svg" />
+  <source media="(prefers-color-scheme: dark)" srcset="dist/snake-dark.svg" />
+  <source media="(prefers-color-scheme: light)" srcset="dist/snake-light.svg" />
+  <img alt="Snake eating my contributions" src="dist/snake-light.svg" />
 </picture>
 </div>
 
