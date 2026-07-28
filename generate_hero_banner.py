@@ -4,7 +4,7 @@ import os
 import re
 from PIL import Image
 
-def get_dithered_photo_points(img_path, max_width=300, max_height=338):
+def get_dithered_photo_points(img_path, max_width=300, max_height=338, target_light=False):
     """Applies Floyd-Steinberg error diffusion dithering to get high-fidelity shaded points."""
     try:
         img = Image.open(img_path).convert("L")
@@ -46,8 +46,10 @@ def get_dithered_photo_points(img_path, max_width=300, max_height=338):
                 if x + 1 < w:
                     arr[y+1][x+1] += error * 1.0 / 16.0
             
-            # We want the dark pixels (representing the portrait)
-            if new_val == 0.0:
+            # For dark theme (target_light=True), we want light pixels (new_val == 255.0)
+            # For light theme (target_light=False), we want dark pixels (new_val == 0.0)
+            target_val = 255.0 if target_light else 0.0
+            if new_val == target_val:
                 points.append((x + dx, y + dy))
                 
     return points
@@ -140,7 +142,8 @@ def patch_svg(template_path, target_path, portrait_paths_str, logo_points):
         r'(<g transform="translate\(50,86\) scale\(1\.2400,1\.4471\)" fill="[^"]+" shape-rendering="crispEdges">).*?(</g>\s*<g transform="translate\(50,86\) scale\(1\.2400,1\.4471\)" fill="[^"]+" shape-rendering="crispEdges" opacity="0">)',
         re.DOTALL
     )
-    new_portrait = r'\1\n' + portrait_paths_str + r'\n\2'
+    # Restore the timer to hide the face at 3.2s
+    new_portrait = r'\1\n<set attributeName="opacity" to="0" begin="3.2s"/>\n' + portrait_paths_str + r'\n\2'
     svg_content = portrait_pattern.sub(new_portrait, svg_content)
 
     # 2. Empty the shatter group (Group 2)
@@ -217,18 +220,22 @@ def patch_svg(template_path, target_path, portrait_paths_str, logo_points):
 
 def main():
     print("Extracting coordinates from images...")
-    # Get dithered points for photo (dark pixels)
-    portrait_points = get_dithered_photo_points("photo.png", max_width=300, max_height=338)
-    print(f"Extracted {len(portrait_points)} portrait points.")
-    
     # Get points for logo (white shape on black background)
     logo_points = get_logo_points("logo.png", max_width=180, max_height=180)
     print(f"Extracted {len(logo_points)} logo points.")
     
-    portrait_paths = build_portrait_paths(portrait_points)
+    # Generate for dark.svg (target_light=True to render light parts on a dark background)
+    dark_portrait_points = get_dithered_photo_points("photo.png", max_width=300, max_height=338, target_light=True)
+    print(f"Extracted {len(dark_portrait_points)} dark portrait points.")
+    dark_portrait_paths = build_portrait_paths(dark_portrait_points)
+    patch_svg("dark.svg", "dark.svg", dark_portrait_paths, logo_points)
     
-    patch_svg("dark.svg", "dark.svg", portrait_paths, logo_points)
-    patch_svg("light.svg", "light.svg", portrait_paths, logo_points)
+    # Generate for light.svg (target_light=False to render dark parts on a light background)
+    light_portrait_points = get_dithered_photo_points("photo.png", max_width=300, max_height=338, target_light=False)
+    print(f"Extracted {len(light_portrait_points)} light portrait points.")
+    light_portrait_paths = build_portrait_paths(light_portrait_points)
+    patch_svg("light.svg", "light.svg", light_portrait_paths, logo_points)
+    
     print("Successfully updated both dark and light SVGs!")
 
 if __name__ == "__main__":
