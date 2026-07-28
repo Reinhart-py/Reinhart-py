@@ -7,11 +7,31 @@ from PIL import Image
 def get_dithered_photo_points(img_path, max_width=300, max_height=338, target_light=False):
     """Applies Floyd-Steinberg error diffusion dithering to get high-fidelity shaded points."""
     try:
-        img = Image.open(img_path).convert("L")
+        img = Image.open(img_path).convert("RGB")
     except Exception as e:
         print(f"Error opening {img_path}: {e}")
         sys.exit(1)
         
+    # Apply soft elliptical vignette to clean out background corners
+    w, h = img.size
+    cx, cy = w / 2.0, h * 0.45
+    rx, ry = w * 0.42, h * 0.46
+    
+    pixels = img.load()
+    for y in range(h):
+        for x in range(w):
+            dx = (x - cx) / rx
+            dy = (y - cy) / ry
+            dist = dx*dx + dy*dy
+            if dist > 1.0:
+                pixels[x, y] = (0, 0, 0)
+            elif dist > 0.5:
+                # Smoothly fade to black
+                factor = (1.0 - dist) / 0.5
+                r, g, b = pixels[x, y]
+                pixels[x, y] = (int(r * factor), int(g * factor), int(b * factor))
+                
+    img = img.convert("L")
     img.thumbnail((max_width, max_height))
     w, h = img.size
     
@@ -20,8 +40,8 @@ def get_dithered_photo_points(img_path, max_width=300, max_height=338, target_li
     dy = (max_height - h) // 2
     
     # Load pixels into a 2D float array to distribute errors without rounding issues
-    pixels = list(img.getdata())
-    arr = [[float(pixels[y * w + x]) for x in range(w)] for y in range(h)]
+    pixels_data = list(img.getdata())
+    arr = [[float(pixels_data[y * w + x]) for x in range(w)] for y in range(h)]
     
     points = []
     for y in range(h):
