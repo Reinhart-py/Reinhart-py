@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Orange-carrier",
+    "repo": "Reinhart-py/Orange-carrier",
+    "description": "Python bot for real-time OrangeCarrier CDR monitoring with cinematic terminal UI and instant Telegram alerts",
+    "tags": ["Python", "Terminal UI", "Telegram Bot"]
+  },
+  {
+    "name": "flipbook",
+    "repo": "Reinhart-py/flipbook",
+    "description": "Web-based flipbook viewer engine and visualizer",
+    "tags": ["JavaScript", "HTML", "GPL"]
+  },
+  {
+    "name": "Crow",
+    "repo": "Reinhart-py/Crow",
+    "description": "A specialized GitHub username checker utility written in Python",
+    "tags": ["Python", "GitHub API", "CLI"]
+  },
+  {
+    "name": "Ella",
+    "repo": "Reinhart-py/Ella",
+    "description": "A 5-letter username finder and checker for Instagram and Threads",
+    "tags": ["Python", "Social Media", "Automation"]
+  },
+  {
+    "name": "ESA",
+    "repo": "Reinhart-py/ESA",
+    "description": "Full-stack application built using TypeScript and modern web tech",
+    "tags": ["TypeScript", "Full-Stack"]
+  },
+  {
+    "name": "Boutique",
+    "repo": "Reinhart-py/Boutique",
+    "description": "Modern online storefront built with React and TypeScript",
+    "tags": ["TypeScript", "React", "Frontend"]
+  }
+]

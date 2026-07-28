@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" width="100%" height="100%">
+  <rect width="100%" height="100%" fill="#F8FAFC"/>
+  <!-- Grid lines -->
+  <path d="M 0 50 L 1200 50 M 0 100 L 1200 100 M 0 150 L 1200 150 M 0 200 L 1200 200 M 0 250 L 1200 250 M 0 300 L 1200 300 M 0 350 L 1200 350" stroke="#E2E8F0" stroke-width="1" stroke-opacity="0.5"/>
+  <path d="M 100 0 L 100 400 M 200 0 L 200 400 M 300 0 L 300 400 M 400 0 L 400 400 M 500 0 L 500 400 M 600 0 L 600 400 M 700 0 L 700 400 M 800 0 L 800 400 M 900 0 L 900 400 M 1000 0 L 1000 400 M 1100 0 L 1100 400" stroke="#E2E8F0" stroke-width="1" stroke-opacity="0.5"/>
+  <!-- Decorative Glow -->
+  <circle cx="600" cy="200" r="180" fill="#94A3B8" opacity="0.1" filter="blur(40px)"/>
+  <!-- Title -->
+  <text x="600" y="190" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="64" font-weight="800" fill="#0F172A" letter-spacing="8">REINHART</text>
+  <!-- Subtitle -->
+  <text x="600" y="240" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="18" fill="#475569" letter-spacing="4">Full-Stack Engineer | Dev Tools &amp; Automation</text>
+  <!-- Terminal Prompt Deco -->
+  <text x="40" y="360" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="14" fill="#94A3B8">> reinhart.py --status</text>
+  <text x="40" y="380" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="14" fill="#475569">> active_threads: 6 | uptime: 100%</text>
+</svg>
