@@ -26,10 +26,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Commit and Push Snake SVGs
-        run: |
-          git config --local user.email "reinhart96x@gmail.com"
-          git config --local user.name "Reinhart-py"
-          git add dist/snake-dark.svg dist/snake-light.svg
-          git diff-index --quiet HEAD || git commit -m "chore: update contribution snake SVGs [skip ci]"
-          git push origin main
+      - name: Push output
+        uses: crazy-max/ghaction-github-pages@v3.1.0
+        with:
+          target_branch: output
+          build_dir: dist
+          commit_message: "Update contribution snake [skip ci]"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
