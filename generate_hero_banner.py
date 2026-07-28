@@ -17,6 +17,8 @@ def get_dithered_photo_points(img_path, max_width=300, max_height=338, target_li
     cx, cy = w / 2.0, h * 0.45
     rx, ry = w * 0.42, h * 0.46
     
+    bg_color = (0, 0, 0) if target_light else (255, 255, 255)
+    
     pixels = img.load()
     for y in range(h):
         for x in range(w):
@@ -24,12 +26,26 @@ def get_dithered_photo_points(img_path, max_width=300, max_height=338, target_li
             dy = (y - cy) / ry
             dist = dx*dx + dy*dy
             if dist > 1.0:
-                pixels[x, y] = (0, 0, 0)
-            elif dist > 0.5:
-                # Smoothly fade to black
-                factor = (1.0 - dist) / 0.5
+                pixels[x, y] = bg_color
+            else:
+                factor = 1.0
+                if dist > 0.5:
+                    # Smoothly fade to background at the edges
+                    factor = (1.0 - dist) / 0.5
+                
                 r, g, b = pixels[x, y]
-                pixels[x, y] = (int(r * factor), int(g * factor), int(b * factor))
+                gray = int(0.299 * r + 0.587 * g + 0.114 * b)
+                
+                if target_light:
+                    # Dark theme: map gray [0, 255] to [60, 255] and fade to black (0)
+                    adjusted_gray = int(60 + (gray / 255.0) * (255.0 - 60))
+                    final_gray = int(adjusted_gray * factor)
+                else:
+                    # Light theme: map gray [0, 255] to [0, 195] and fade to white (255)
+                    adjusted_gray = int((gray / 255.0) * 195)
+                    final_gray = int(255 - (255 - adjusted_gray) * factor)
+                
+                pixels[x, y] = (final_gray, final_gray, final_gray)
                 
     img = img.convert("L")
     img.thumbnail((max_width, max_height))
@@ -187,8 +203,11 @@ def patch_svg(template_path, target_path, portrait_paths_str, logo_points):
     print(f"Mapping {num_particles} animated particles for {href_type}...")
 
     # Scale logo points to center region x: [80, 220], y: [120, 260]
+    print(f"DEBUG inside patch_svg for {target_path}: logo_points len={len(logo_points)}")
     logo_x = [p[0] for p in logo_points]
     logo_y = [p[1] for p in logo_points]
+    print(f"DEBUG inside patch_svg: logo_x range={min(logo_x) if logo_x else None} to {max(logo_x) if logo_x else None}")
+    print(f"DEBUG inside patch_svg: logo_y range={min(logo_y) if logo_y else None} to {max(logo_y) if logo_y else None}")
     
     lx_min, lx_max = min(logo_x) if logo_x else 0, max(logo_x) if logo_x else 1
     ly_min, ly_max = min(logo_y) if logo_y else 0, max(logo_y) if logo_y else 1
@@ -199,19 +218,23 @@ def patch_svg(template_path, target_path, portrait_paths_str, logo_points):
         sy = int(120 + ((y - ly_min) / max(1, ly_max - ly_min)) * 140)
         scaled_logo_points.append((sx, sy))
         
+    print(f"DEBUG inside patch_svg: scaled Y range={min(p[1] for p in scaled_logo_points) if scaled_logo_points else None} to {max(p[1] for p in scaled_logo_points) if scaled_logo_points else None}")
+        
     sampled_points = []
     if len(scaled_logo_points) > 0:
         while len(sampled_points) < num_particles:
             sampled_points.extend(scaled_logo_points)
-        sampled_points = sampled_points[:num_particles]
         random.shuffle(sampled_points)
+        sampled_points = sampled_points[:num_particles]
     else:
         sampled_points = [(random.randint(80, 220), random.randint(120, 260)) for _ in range(num_particles)]
 
     # Re-build <use> tags
     new_particles = []
+    tys = []
     for i in range(num_particles):
         tx, ty = sampled_points[i]
+        tys.append(ty)
         x0, y0 = random.randint(10, 290), random.randint(90, 330)
         x2, y2 = tx, ty
         x4, y4 = tx + random.randint(-8, 8), ty + random.randint(-8, 8)
@@ -225,6 +248,7 @@ def patch_svg(template_path, target_path, portrait_paths_str, logo_points):
             f'</use>'
         )
         new_particles.append(particle_str)
+    print(f"DEBUG: generated particles ty range: {min(tys)} to {max(tys)}")
         
     first_use_idx = svg_content.find(f'<use href="#{href_type}"')
     last_use_idx = svg_content.rfind('</use>')
