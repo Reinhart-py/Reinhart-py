@@ -4,19 +4,66 @@ import os
 import re
 from PIL import Image
 
-def get_dithered_points(img_path, max_width=300, max_height=338, threshold=128):
-    """Loads an image, resizes it, converts to grayscale, and returns coordinate points of dark pixels."""
+def get_dithered_photo_points(img_path, max_width=300, max_height=338):
+    """Applies Floyd-Steinberg error diffusion dithering to get high-fidelity shaded points."""
     try:
-        img = Image.open(img_path)
+        img = Image.open(img_path).convert("L")
     except Exception as e:
         print(f"Error opening {img_path}: {e}")
         sys.exit(1)
         
-    img = img.convert("L")
     img.thumbnail((max_width, max_height))
-    
-    # Calculate offset to center the image within the bounding frame (300 x 338)
     w, h = img.size
+    
+    # Centering offsets
+    dx = (max_width - w) // 2
+    dy = (max_height - h) // 2
+    
+    # Load pixels into a 2D float array to distribute errors without rounding issues
+    pixels = list(img.getdata())
+    arr = [[float(pixels[y * w + x]) for x in range(w)] for y in range(h)]
+    
+    points = []
+    for y in range(h):
+        for x in range(w):
+            old_val = arr[y][x]
+            # Clamp value
+            old_val = max(0.0, min(255.0, old_val))
+            
+            # Quantize to 0 (black) or 255 (white)
+            new_val = 0.0 if old_val < 128.0 else 255.0
+            arr[y][x] = new_val
+            
+            error = old_val - new_val
+            
+            # Diffuse error to neighbors
+            if x + 1 < w:
+                arr[y][x+1] += error * 7.0 / 16.0
+            if y + 1 < h:
+                if x - 1 >= 0:
+                    arr[y+1][x-1] += error * 3.0 / 16.0
+                arr[y+1][x] += error * 5.0 / 16.0
+                if x + 1 < w:
+                    arr[y+1][x+1] += error * 1.0 / 16.0
+            
+            # We want the dark pixels (representing the portrait)
+            if new_val == 0.0:
+                points.append((x + dx, y + dy))
+                
+    return points
+
+def get_logo_points(img_path, max_width=180, max_height=180):
+    """Extracts points representing the white shape/mask on a black background."""
+    try:
+        img = Image.open(img_path).convert("L")
+    except Exception as e:
+        print(f"Error opening {img_path}: {e}")
+        sys.exit(1)
+        
+    img.thumbnail((max_width, max_height))
+    w, h = img.size
+    
+    # Center offsets
     dx = (max_width - w) // 2
     dy = (max_height - h) // 2
     
@@ -24,26 +71,25 @@ def get_dithered_points(img_path, max_width=300, max_height=338, threshold=128):
     for y in range(h):
         for x in range(w):
             val = img.getpixel((x, y))
-            if val < threshold:  # Dark pixel
+            # We want the white pixels (representing the mask/logo)
+            if val > 128:
                 points.append((x + dx, y + dy))
     return points
 
 def build_portrait_paths(points):
-    """Splits points into scanlines and constructs SVG <path> elements with animation fade-ins."""
+    """Splits points into scanlines and constructs SVG <path> elements with closed loop coordinates."""
     # Group points by y coordinate
     lines = {}
     for x, y in points:
         lines.setdefault(y, []).append(x)
         
     paths = []
-    # Total animation duration is 0.9s. Start timings stretch from 0.20s to 0.70s based on vertical position
     y_min = min(lines.keys()) if lines else 0
     y_max = max(lines.keys()) if lines else 1
     y_range = max(1, y_max - y_min)
     
     for y in sorted(lines.keys()):
         x_coords = sorted(lines[y])
-        # Group contiguous pixels on same row to create continuous horizontal lines
         runs = []
         if not x_coords:
             continue
@@ -59,15 +105,15 @@ def build_portrait_paths(points):
                 prev_x = x
         runs.append((start_x, prev_x))
         
-        # Build path data string
+        # Build path data string with filled 1px height boxes: M{x} {y}h{w}v1h-{w}z
         d_parts = []
         for sx, ex in runs:
             length = ex - sx + 1
-            d_parts.append(f"M{sx} {y}h{length}")
+            d_parts.append(f"M{sx} {y}h{length}v1h-{length}z")
             
         d_str = "".join(d_parts)
         
-        # Calculate fade-in timing based on scanline height
+        # Timing calculation based on scanline height
         norm_y = (y - y_min) / y_range
         begin_time = 0.20 + (norm_y * 0.50)
         
@@ -85,28 +131,23 @@ def patch_svg(template_path, target_path, portrait_paths_str, logo_points):
     with open(template_path, "r", encoding="utf-8") as f:
         svg_content = f.read()
 
-    # Determine theme fill color from template
     fill_match = re.search(r'shape-rendering="crispEdges"\s*fill="([^"]+)"', svg_content)
     fill_color = fill_match.group(1) if fill_match else "#A78BFA"
     href_type = "tvlight" if "light" in target_path else "tvdark"
 
-    # 1. Replace the first portrait scanline group (Group 1: lines 32 to 94)
-    # Start tag: <g transform="translate(50,86) scale(1.2400,1.4471)" fill="..." shape-rendering="crispEdges">
-    # End tag: start of Group 2 (which has opacity="0")
+    # 1. Replace first portrait scanline group (Group 1)
     portrait_pattern = re.compile(
         r'(<g transform="translate\(50,86\) scale\(1\.2400,1\.4471\)" fill="[^"]+" shape-rendering="crispEdges">).*?(</g>\s*<g transform="translate\(50,86\) scale\(1\.2400,1\.4471\)" fill="[^"]+" shape-rendering="crispEdges" opacity="0">)',
         re.DOTALL
     )
-    
     new_portrait = r'\1\n' + portrait_paths_str + r'\n\2'
     svg_content = portrait_pattern.sub(new_portrait, svg_content)
 
-    # 2. Empty the shatter group (Group 2: lines 95 to 191) to prevent old face fragments from flying around
+    # 2. Empty the shatter group (Group 2)
     shatter_pattern = re.compile(
         r'(<g transform="translate\(50,86\) scale\(1\.2400,1\.4471\)" fill="[^"]+" shape-rendering="crispEdges" opacity="0">).*?(</g>\s*</g>\s*<defs>)',
         re.DOTALL
     )
-    # We replace its inner contents with just the opacity setter, a single closing tag, and defs
     new_shatter = r'\1\n<set attributeName="opacity" to="1" begin="3.2s"/>\n</g>\n<defs>'
     svg_content = shatter_pattern.sub(new_shatter, svg_content)
 
@@ -114,7 +155,6 @@ def patch_svg(template_path, target_path, portrait_paths_str, logo_points):
     import random
     random.seed(42)
     
-    # Let's count how many <use tags exist in the template before we modify it
     with open(template_path, "r", encoding="utf-8") as f:
         orig_content = f.read()
     num_particles = len(re.findall(rf'<use href="#{href_type}"', orig_content))
@@ -163,31 +203,30 @@ def patch_svg(template_path, target_path, portrait_paths_str, logo_points):
         )
         new_particles.append(particle_str)
         
-    # Replace particles block using exact indices
     first_use_idx = svg_content.find(f'<use href="#{href_type}"')
     last_use_idx = svg_content.rfind('</use>')
     
     if first_use_idx != -1 and last_use_idx != -1:
-        last_use_idx += 6  # include length of </use>
+        last_use_idx += 6
         svg_content = svg_content[:first_use_idx] + "\n".join(new_particles) + svg_content[last_use_idx:]
     else:
-        print(f"Warning: Could not locate particle positions in {template_path}.")    
+        print(f"Warning: Could not locate particle positions in {template_path}.")
+        
     with open(target_path, "w", encoding="utf-8") as f:
         f.write(svg_content)
 
 def main():
     print("Extracting coordinates from images...")
-    # Your photo: convert to dither coordinates (width=300, height=338 to fit frame)
-    portrait_points = get_dithered_points("photo.png", max_width=300, max_height=338, threshold=120)
+    # Get dithered points for photo (dark pixels)
+    portrait_points = get_dithered_photo_points("photo.png", max_width=300, max_height=338)
     print(f"Extracted {len(portrait_points)} portrait points.")
     
-    # Your logo: extract points to guide the 900 floating particles
-    logo_points = get_dithered_points("logo.png", max_width=180, max_height=180, threshold=128)
+    # Get points for logo (white shape on black background)
+    logo_points = get_logo_points("logo.png", max_width=180, max_height=180)
     print(f"Extracted {len(logo_points)} logo points.")
     
     portrait_paths = build_portrait_paths(portrait_points)
     
-    # Patch both dark and light SVGs
     patch_svg("dark.svg", "dark.svg", portrait_paths, logo_points)
     patch_svg("light.svg", "light.svg", portrait_paths, logo_points)
     print("Successfully updated both dark and light SVGs!")
