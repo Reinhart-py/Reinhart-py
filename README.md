@@ -7,9 +7,9 @@
 
 # Reinhart
 
-Full-stack engineer focused on building reliable software, developer tools, automation, and scalable backend systems.
+CTO • Full Stack Developer • Automation
 
-I enjoy solving difficult engineering problems, improving existing products, and helping developers debug, optimize, and ship software faster. My work ranges from modern web applications and mobile apps to bots, APIs, infrastructure, and developer tooling.
+I build products, internal tools, and automation that solve real business problems as life is all about cash and desires .
 
 ---
 
